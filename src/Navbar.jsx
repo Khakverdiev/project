@@ -1,8 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Footer from "./Footer";
+import { useState } from "react";
+import { useAuth } from "./AuthContext";
 
 const Navbar = () => {
+
+  const { username, handleLogout } = useAuth();
+
   return (
     <>
       <br />
@@ -20,34 +24,22 @@ const Navbar = () => {
           <div className="w-full flex justify-center">
             <ul className="flex space-x-8">
               <li>
-                <Link
-                  to="/home"
-                  className="text-white text-lg font-semibold hover:underline"
-                >
+                <Link to="/home" className="text-white text-lg font-semibold hover:underline">
                   Home
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/about-us"
-                  className="text-white text-lg font-semibold hover:underline"
-                >
+                <Link to="/about-us" className="text-white text-lg font-semibold hover:underline">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/contacts"
-                  className="text-white text-lg font-semibold hover:underline"
-                >
+                <Link to="/contacts" className="text-white text-lg font-semibold hover:underline">
                   Contacts
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/delivery"
-                  className="text-white text-lg font-semibold hover:underline"
-                >
+                <Link to="/delivery" className="text-white text-lg font-semibold hover:underline">
                   Delivery and Payment
                 </Link>
               </li>
@@ -55,22 +47,17 @@ const Navbar = () => {
           </div>
 
           <div className="absolute right-4 flex items-center">
-            <Link
-              to="/cart"
-              className="text-white text-lg font-semibold hover:underline mr-4"
-            >
-              <img
-                src={process.env.PUBLIC_URL + "/k.png"}
-                alt="Cart Icon"
-                className="h-8 w-8 inline-block"
-              />
+            <Link to="/cart" className="text-white text-lg font-semibold hover:underline mr-4">
+              <img src={process.env.PUBLIC_URL + "/k.png"} alt="Cart Icon" className="h-8 w-8 inline-block" />
             </Link>
-            <Link
-              to="/login"
-              className="text-white text-lg font-semibold hover:underline"
-            >
-              Login
-            </Link>
+            {username ? (
+              <span className="text-white text-lg font-semibold">{username}</span>
+            ) : (
+              <Link to="/login" className="text-white text-lg font-semibold hover:underline">
+                Login
+              </Link>
+            )}
+            {username && <button onClick={handleLogout} className="ml-4 text-white">Logout</button>}
           </div>
         </div>
       </nav>

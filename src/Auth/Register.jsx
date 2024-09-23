@@ -1,16 +1,40 @@
-
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [role, setRole] = useState("appuser");
+    const history = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Name:", name);
-        console.log("Email:", email);
-        console.log("Password:", password);
+
+        if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return;
+        }
+
+        try {
+            const response = await axios.post("http://localhost:5175/api/v1/auth/register", {
+                username: name,
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword,
+                role: role
+            });
+
+            if (response.status === 200) {
+                alert("Registration successful! Please check your email to confirm.");
+                history.push("/login");
+            }
+        } catch (error) {
+            console.error("Error during registration:", error);
+            alert("Registration failed. Please check your input.");
+        }
     };
 
     return (
@@ -55,6 +79,20 @@ const Register = () => {
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="********"
+                            required
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
+                            Confirm Password
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="********"
                             required
