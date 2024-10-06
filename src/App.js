@@ -1,16 +1,11 @@
-import { IoMagnet } from "react-icons/io5";
-import "./App.css";
-import { Link, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
-
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
-
-import { Outlet } from "react-router-dom";
-
+import { useEffect, useState } from "react";
 
 function App() {
 
   const [authState, setAuthState] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
@@ -18,11 +13,12 @@ function App() {
     }
   }, [authState]);
 
-  
+  const hideNavbar = location.pathname === "/login" || location.pathname === "/register";
+
   return (
     <div className="App">
       <header>
-        <Navbar authState={authState} />
+        {!hideNavbar && <Navbar authState={authState} />}
       </header>
       <main>
         <Outlet />

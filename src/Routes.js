@@ -6,6 +6,9 @@ import Cart from "./Cart";
 import Contacts from "./Contacts";
 import Delivery from "./Delivery";
 import Home from "./Home";
+import Order from "./Order";
+import ProductDetails from "./ProductDetails";
+import Profile from "./Profile";
 import { Navigate } from "react-router-dom";
 
 const routes = [
@@ -45,6 +48,18 @@ const routes = [
         path: "cart",
         element: <Cart />
       },
+      {
+        path: "order",
+        element: <Order />
+      },
+      {
+        path: "product/:id",
+        element: <ProductDetails />,
+      },
+      {
+        path: "profile",
+        element: <Profile/>
+      }
     ],
   },
 ];

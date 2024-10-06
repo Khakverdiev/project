@@ -1,64 +1,129 @@
-import React from "react";
-import Footer from "./Footer";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-    const cartItems = [
-        {
-            id: 1,
-            name: "Stylish T-Shirt",
-            price: 29.99,
-            quantity: 2,
-            image: "/images/tshirt.png", // Update with your image path
+  const { accessToken, refreshAccessToken } = useAuth();
+  const [cartItems, setCartItems] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const fetchCartItems = async () => {
+    setError("");
+    setLoading(true);
+
+    if (!accessToken) {
+      setError("You need to log in to see your cart.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get("http://localhost:5175/api/v1/cart/GetCart", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-        {
-            id: 2,
-            name: "Classic Jeans",
-            price: 49.99,
-            quantity: 1,
-            image: "/images/jeans.png", // Update with your image path
+      });
+
+      const items = response.data.items?.$values || [];
+      setCartItems(items);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        try {
+          await refreshAccessToken();
+          await fetchCartItems();
+        } catch (refreshError) {
+          setError("Error refreshing token. Please log in again.");
+        }
+      } else {
+        setError("Error fetching cart items. Please try again.");
+      }
+      console.error("Error fetching cart:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, [accessToken]);
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+      await axios.delete(`http://localhost:5175/api/v1/cart/${itemId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-    ];
+      });
 
-    const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+      setCartItems((prevItems) => prevItems.filter(item => item.id !== itemId));
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        try {
+          await refreshAccessToken();
+          await handleRemoveItem(itemId);
+        } catch (refreshError) {
+          setError("Error refreshing token. Please log in again.");
+        }
+      } else {
+        console.error("Error removing item:", error);
+        setError("Error removing item. Please try again.");
+      }
+    }
+  };
 
-    return (
-        <>
-        <br></br>
-        <br></br>
-        <div className="flex flex-col items-center p-6">
-            <h1 className="text-4xl font-bold mb-6">Your Cart</h1>
+  const handleBuy = () => {
+    navigate('/order');
+  };
 
-            <div className="w-full max-w-3xl bg-white rounded-lg shadow-md p-6">
-                {cartItems.length === 0 ? (
-                    <p className="text-lg text-center">Your cart is empty.</p>
-                ) : (
-                    cartItems.map(item => (
-                        <div key={item.id} className="flex items-center border-b py-4">
-                            <img src={process.env.PUBLIC_URL + item.image} alt={item.name} className="h-16 w-16 mr-4" />
-                            <div className="flex-grow">
-                                <h2 className="text-xl font-semibold">{item.name}</h2>
-                                <p className="text-gray-600">Price: ${item.price.toFixed(2)}</p>
-                                <p className="text-gray-600">Quantity: {item.quantity}</p>
-                            </div>
-                            <div className="text-lg font-semibold">
-                                ${(item.price * item.quantity).toFixed(2)}
-                            </div>
-                        </div>
-                    ))
-                )}
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">Your Cart</h1>
+      
+      {cartItems.length > 0 && (
+        <button
+          onClick={handleBuy}
+          className="bg-black text-white py-1 px-2 rounded hover:bg-green-700 mb-6"
+          style={{ width: "100px" }}
+        >
+          Buy
+        </button>
+      )}
+
+      {loading ? (
+        <p>Loading cart items...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : cartItems.length === 0 ? (
+        <p className="text-center">Your cart is empty.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {cartItems.map((item) => (
+            <div key={item.id} className="border p-4 rounded shadow">
+              <h2 className="text-xl font-semibold">{item.product.name}</h2>
+              <p>Price: ${item.product.price}</p>
+              <p>Quantity: {item.quantity}</p>
+              <div className="flex justify-center items-center h-48">
+                <img 
+                  src={item.product.imageUrl} 
+                  alt={item.product.name} 
+                  className="max-w-full max-h-full object-contain h-full" 
+                />
+              </div>
+              <button
+                onClick={() => handleRemoveItem(item.id)}
+                className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
+              >
+                Remove
+              </button>
             </div>
-
-            {cartItems.length > 0 && (
-                <div className="mt-6 w-full max-w-3xl bg-white rounded-lg shadow-md p-4">
-                    <h2 className="text-2xl font-semibold">Total Amount: ${totalAmount}</h2>
-                    <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Proceed to Checkout
-                    </button>
-                </div>
-            )}
+          ))}
         </div>
-        </>
-    );
+      )}
+    </div>
+  );
 };
 
 export default Cart;
