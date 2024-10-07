@@ -21,7 +21,7 @@ const Login = () => {
 
         handleLogin(
           response.data.userId,
-          response.data.name,
+          response.data.username,
           response.data.accessToken, 
           response.data.refreshToken,
           response.data.refreshTokenExpireTime 

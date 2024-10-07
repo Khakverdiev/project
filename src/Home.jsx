@@ -29,7 +29,7 @@ const Home = () => {
         },
       });
 
-      setProducts(response.data);
+      setProducts(response.data.$values);
     } catch (error) {
       setError("Error fetching products. Please try again.");
       console.error("Error fetching products:", error);

@@ -4,7 +4,7 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [username, setUsername] = useState(localStorage.getItem('name') || null);
+    const [username, setUsername] = useState(localStorage.getItem('username') || null);
     const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
     const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || null);
     const [refreshTokenExpireTime, setRefreshTokenExpireTime] = useState(localStorage.getItem('refreshTokenExpireTime') || null);
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const storedUsername = localStorage.getItem('name');
+        const storedUsername = localStorage.getItem('username');
         const storedAccessToken = localStorage.getItem('accessToken');
         const storedRefreshToken = localStorage.getItem('refreshToken');
         const storedRefreshTokenExpireTime = localStorage.getItem('refreshTokenExpireTime');
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
         setRefreshTokenExpireTime(refreshTokenExpireTime);
 
         localStorage.setItem('userId', userId);
-        localStorage.setItem('name', username);
+        localStorage.setItem('username', username);
         localStorage.setItem('accessToken', access);
         localStorage.setItem('refreshToken', refresh);
         localStorage.setItem('refreshTokenExpireTime', refreshTokenExpireTime);
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
         setUserId(null);
         setRefreshTokenExpireTime(null);
 
-        localStorage.removeItem('name');
+        localStorage.removeItem('username');
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('refreshTokenExpireTime');
