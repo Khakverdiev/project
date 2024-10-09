@@ -27,7 +27,6 @@ const Cart = () => {
       });
 
       setCart(response.data);
-      // Fetch products when cart is loaded
       const productsResponse = await axios.get("http://localhost:5175/api/v1/product/GetProducts", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -87,7 +86,6 @@ const Cart = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {cart.items.$values.map((item) => {
-            // Find product details from the products array
             const product = products.find((prod) => prod.id === item.productId);
 
             return (

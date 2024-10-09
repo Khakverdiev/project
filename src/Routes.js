@@ -9,7 +9,10 @@ import Home from "./Home";
 import Order from "./Order";
 import ProductDetails from "./ProductDetails";
 import Profile from "./Profile";
+import ConfirmEmail from "./Auth/ConfirmEmail";
 import { Navigate } from "react-router-dom";
+import UpdateProfile from "./UpdateProfile";
+import ResetPassword from "./Auth/ResetPassword";
 
 const routes = [
   {
@@ -59,6 +62,18 @@ const routes = [
       {
         path: "profile",
         element: <Profile/>
+      },
+      {
+        path: "profile/confirm-email",
+        element: <ConfirmEmail />
+      },
+      {
+        path: "profile/update-profile",
+        element: <UpdateProfile/>
+      },
+      {
+        path: "profile/change-password",
+        element: <ResetPassword/>
       }
     ],
   },

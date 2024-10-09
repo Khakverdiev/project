@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const usernamePattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[_*&%$#@]).{5,}$/;
+
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -11,11 +13,22 @@ const Register = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const validateUsername = (username) => {
+    return usernamePattern.test(username);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      return;
+    }
+
+    if (!validateUsername(name)) {
+      setError(
+        "Username must contain at least one uppercase letter, one lowercase letter, one special character (_*&%$#@), and be at least 5 characters long."
+      );
       return;
     }
 
@@ -33,7 +46,7 @@ const Register = () => {
 
       if (response.status === 200) {
         alert("Registration successful! Please check your email to confirm.");
-        navigate(`/confirm-email/${response.data.confirmationToken}`);
+        navigate(`/login`);
       }
     } catch (error) {
       console.error("Error during registration:", error);
