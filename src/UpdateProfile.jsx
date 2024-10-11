@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 
-const UpdateProfile = ({ setView }) => {
+const UpdateProfile = () => {
   const { accessToken, userId } = useAuth();
   const [profile, setProfile] = useState({
     userId,
@@ -147,8 +147,8 @@ const UpdateProfile = ({ setView }) => {
             <label className="block text-gray-700">ZIP Code</label>
             <input
               type="text"
-              name="zipCode"
-              value={profile.zipCode}
+              name="postalCode"
+              value={profile.postalCode}
               onChange={handleChange}
               className="border p-2 w-full rounded"
             />

@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 import Footer from "./Footer";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { accessToken, userId } = useAuth();
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [address, setAddress] = useState("");
@@ -76,15 +78,24 @@ const Profile = () => {
             <strong>Phone Number:</strong> {phoneNumber}
           </p>
           <div className="flex justify-between mt-6">
-            <Link to="update-profile" className="text-lg font-semibold hover:underline">
-              Update Profile
-            </Link>
-            <Link to="confirm-email" className="text-lg font-semibold hover:underline">
-              Confirm Email
-            </Link>
-            <Link to="change-password" className="text-lg font-semibold hover:underline">
-              Change Password
-            </Link>
+          <button
+            onClick={() => navigate("/profile/update-profile")}
+            className="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300"
+          >
+            Update Profile
+          </button>
+          <button
+            onClick={() => navigate("/profile/confirm-email")}
+            className="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300"
+          >
+            Confirm Email
+          </button>
+          <button
+            onClick={() => navigate("/profile/change-password")}
+            className="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300"
+          >
+            Change Password
+          </button>
           </div>
         </div>
       </div>
