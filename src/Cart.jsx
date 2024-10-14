@@ -1,73 +1,42 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useAuth } from "./AuthContext";
+import { useCart } from "./CartContext";
 
 const Cart = () => {
-  const { accessToken } = useAuth();
-  const [cart, setCart] = useState(null);
+  const { cartItems, removeItemFromCart, clearCart } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchCart = async () => {
+  const fetchProducts = async () => {
     setLoading(true);
     setError("");
 
-    if (!accessToken) {
-      setError("You need to log in to view the cart.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await axios.get("http://localhost:5175/api/v1/cart/GetCart", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      setCart(response.data);
-      const productsResponse = await axios.get("http://localhost:5175/api/v1/product/GetProducts", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      setProducts(productsResponse.data.$values);
+      const response = await fetch("http://localhost:5175/api/v1/product/GetProducts");
+      const productsData = await response.json();
+      setProducts(productsData.$values || []);
     } catch (error) {
-      setError("Error fetching cart. Please try again.");
-      console.error("Error fetching cart:", error);
+      setError("Error fetching products. Please try again.");
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCart();
-  }, [accessToken]);
-
-  const handleRemoveFromCart = async (productId) => {
-    try {
-      await axios.delete(`http://localhost:5175/api/v1/cart/remove/${productId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      fetchCart();
-    } catch (error) {
-      setError("Error removing item from cart. Please try again.");
-      console.error("Error removing item from cart:", error);
-    }
-  };
+    fetchProducts();
+  }, []);
 
   const handleBuy = () => {
     console.log("Proceeding to buy items in the cart");
+    clearCart();
   };
 
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Your Cart</h1>
 
-      {cart && cart.items.$values.length > 0 && (
+      {cartItems.length > 0 && (
         <button
           onClick={handleBuy}
           className="bg-black text-white py-1 px-2 rounded hover:bg-green-700 mb-6"
@@ -78,14 +47,14 @@ const Cart = () => {
       )}
 
       {loading ? (
-        <p>Loading cart items...</p>
+        <p>Loading products...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
-      ) : cart && cart.items.$values.length === 0 ? (
+      ) : cartItems.length === 0 ? (
         <p className="text-center">Your cart is empty.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cart.items.$values.map((item) => {
+          {cartItems.map((item) => {
             const product = products.find((prod) => prod.id === item.productId);
 
             return (
@@ -105,7 +74,7 @@ const Cart = () => {
                   )}
                 </div>
                 <button
-                  onClick={() => handleRemoveFromCart(item.productId)}
+                  onClick={() => removeItemFromCart(item.productId)}
                   className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
                 >
                   Remove

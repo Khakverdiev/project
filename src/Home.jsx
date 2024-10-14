@@ -3,7 +3,7 @@ import axios from "axios";
 import Footer from "./Footer";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
-
+import { useCart } from "./CartContext";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -12,6 +12,7 @@ const Home = () => {
   const [quantities, setQuantities] = useState({});
 
   const { accessToken } = useAuth();
+  const { addItemToCart } = useCart();
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
@@ -42,7 +43,7 @@ const Home = () => {
     fetchProducts();
   }, [accessToken]);
 
-  const handleBuy = async (productId) => {
+  const handleBuy = (productId) => {
     const quantity = quantities[productId] || 1;
     const product = products.find((prod) => prod.id === productId);
 
@@ -56,23 +57,14 @@ const Home = () => {
       return;
     }
 
-    try {
-      const response = await axios.post(
-        `http://localhost:5175/api/v1/cart/${productId}`,
-        quantity,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      console.log("Product added to cart:", response.data);
-      setError("");
-    } catch (error) {
-      console.error("Error adding product to cart:", error.response.data);
-      setError("Error adding product to cart. Please try again.");
-    }
+    addItemToCart({ 
+      productId: product.id, 
+      name: product.name, 
+      price: product.price, 
+      quantity 
+    });
+
+    setError("");
   };
 
   const handleQuantityChange = (productId, newQuantity) => {
