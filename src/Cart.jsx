@@ -59,19 +59,43 @@ const Cart = () => {
         </button>
       )}
 
-      {cartItems.length === 0 ? (
+      {loading ? (
+        <p>Loading products...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : cartItems.length === 0 ? (
         <p className="text-center">Your cart is empty.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cartItems.map((item, index) => (
+          {cartItems.map((item, index) => {
+          const product = products.find((prod) => prod.id === item.productId);
+
+          if (!product) {
+            return (
+              <div key={item.productId || index} className="border p-4 rounded shadow">
+                <h2 className="text-xl font-semibold">Product not found</h2>
+                <p>Price: ${item.price}</p>
+                <p>Quantity: {item.quantity}</p>
+                <p className="text-red-500">Image not available</p>
+                <button
+                  onClick={() => removeItemFromCart(item.productId)}
+                  className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+            );
+          }
+        
+          return (
             <div key={item.productId || index} className="border p-4 rounded shadow">
-              <h2 className="text-xl font-semibold">{item.name}</h2>
+              <h2 className="text-xl font-semibold">{product.name}</h2>
               <p>Price: ${item.price}</p>
               <p>Quantity: {item.quantity}</p>
               <div className="flex justify-center items-center h-48">
                 <img
-                  src={item.imageUrl}
-                  alt={item.name}
+                  src={product.imageUrl}
+                  alt={product.name}
                   className="max-w-full max-h-full object-contain h-full"
                 />
               </div>
@@ -82,7 +106,8 @@ const Cart = () => {
                 Remove
               </button>
             </div>
-          ))}
+          );
+        })}
         </div>
       )}
     </div>
