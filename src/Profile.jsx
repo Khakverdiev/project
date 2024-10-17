@@ -21,10 +21,11 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5175/api/v1/UserProfile/${userId}`, {
+        const response = await axios.get(`https://localhost:7131/api/UserProfile/${userId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
+          withCredentials: true
         });
         const { firstName, lastName, phoneNumber, address, city, country, postalCode } = response.data;
         setFirstName(firstName);

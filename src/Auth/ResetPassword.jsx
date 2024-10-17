@@ -11,11 +11,11 @@ const ResetPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5175/api/v1/account/reset-password', {
+            const response = await axios.post('https://localhost:7131/api/account/reset-password', {
                 oldPassword,
                 newPassword,
-                confirmNewPassword
-            });
+                confirmNewPassword,
+            }, {withCredentials: true});
             
             setMessage(response.data || 'Password has been successfully reset.');
             setError('');

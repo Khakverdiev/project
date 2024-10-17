@@ -1,47 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Footer from "./Footer";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "./CartContext";
+import useAxiosInterceptors from "./useAxiosInterceptors ";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [quantities, setQuantities] = useState({});
-
   const { accessToken } = useAuth();
   const { addItemToCart } = useCart();
   const navigate = useNavigate();
 
-  const fetchProducts = async () => {
+  const hasError = useAxiosInterceptors();
+
+  const fetchProducts = useCallback(async () => {
     setError("");
-    if (!accessToken) {
-      setError("You need to log in to see the products.");
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
 
     try {
-      const response = await axios.get("http://localhost:5175/api/v1/product/GetProducts", {
+      const response = await axios.get("https://localhost:7131/api/product/GetProducts", {
+        withCredentials: true,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`
         },
       });
 
-      setProducts(response.data.$values);
+      setProducts(response.data.$values || response.data);
     } catch (error) {
       setError("Error fetching products. Please try again.");
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [accessToken]);
 
   useEffect(() => {
     fetchProducts();
-  }, [accessToken]);
+  }, [fetchProducts]);
 
   const handleBuy = (productId) => {
     const quantity = quantities[productId] || 1;
@@ -57,11 +56,12 @@ const Home = () => {
       return;
     }
 
-    addItemToCart({ 
-      productId: product.id, 
-      name: product.name, 
-      price: product.price, 
-      quantity 
+    addItemToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      quantity: quantity,
     });
 
     setError("");
@@ -81,13 +81,13 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow px-4 py-10">
-        <br></br>
-        <br></br>
         <h1 className="text-5xl font-bold text-center mb-6">Home</h1>
         {loading ? (
           <p className="text-center">Loading products...</p>
-        ) : error ? (
-          <p className="text-center text-red-500">{error}</p>
+        ) : error || hasError ? (
+          <p className="text-center text-red-500">
+            {error || "There was an issue loading the products. Please try again later."}
+          </p>
         ) : Array.isArray(products) && products.length > 0 ? (
           <div className="grid grid-cols-3 gap-8 px-4">
             {products.map((product) => (

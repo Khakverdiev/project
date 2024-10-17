@@ -50,7 +50,7 @@ const UpdateProfile = () => {
 
     try {
       await axios.put(
-        `http://localhost:5175/api/v1/userprofile/${userId}`,
+        `http://localhost:5175/api/userprofile/${userId}`,
         { ...profile },
         {
           headers: {

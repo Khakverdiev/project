@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
+import { useAuth } from "./AuthContext";
 
 const Cart = () => {
   const { cartItems, removeItemFromCart, clearCart } = useCart();
+  const { accessToken } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -12,7 +14,16 @@ const Cart = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5175/api/v1/product/GetProducts");
+      const response = await fetch("http://localhost:5175/api/product/GetProducts", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+
       const productsData = await response.json();
       setProducts(productsData.$values || []);
     } catch (error) {
@@ -24,8 +35,10 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (accessToken) {
+      fetchProducts();
+    }
+  }, [accessToken]);
 
   const handleBuy = () => {
     console.log("Proceeding to buy items in the cart");
@@ -54,25 +67,16 @@ const Cart = () => {
         <p className="text-center">Your cart is empty.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cartItems.map((item) => {
-            const product = products.find((prod) => prod.id === item.productId);
+          {cartItems.map((item, index) => {
+          const product = products.find((prod) => prod.id === item.productId);
 
+          if (!product) {
             return (
-              <div key={item.productId} className="border p-4 rounded shadow">
-                <h2 className="text-xl font-semibold">{product ? product.name : "Product not found"}</h2>
+              <div key={item.productId || index} className="border p-4 rounded shadow">
+                <h2 className="text-xl font-semibold">Product not found</h2>
                 <p>Price: ${item.price}</p>
                 <p>Quantity: {item.quantity}</p>
-                <div className="flex justify-center items-center h-48">
-                  {product ? (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="max-w-full max-h-full object-contain h-full"
-                    />
-                  ) : (
-                    <p className="text-red-500">Image not available</p>
-                  )}
-                </div>
+                <p className="text-red-500">Image not available</p>
                 <button
                   onClick={() => removeItemFromCart(item.productId)}
                   className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
@@ -81,7 +85,29 @@ const Cart = () => {
                 </button>
               </div>
             );
-          })}
+          }
+        
+          return (
+            <div key={item.productId || index} className="border p-4 rounded shadow">
+              <h2 className="text-xl font-semibold">{product.name}</h2>
+              <p>Price: ${item.price}</p>
+              <p>Quantity: {item.quantity}</p>
+              <div className="flex justify-center items-center h-48">
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="max-w-full max-h-full object-contain h-full"
+                />
+              </div>
+              <button
+                onClick={() => removeItemFromCart(item.productId)}
+                className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
+              >
+                Remove
+              </button>
+            </div>
+          );
+        })}
         </div>
       )}
     </div>

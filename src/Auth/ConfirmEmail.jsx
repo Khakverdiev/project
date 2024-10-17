@@ -13,7 +13,7 @@ const ConfirmEmail = () => {
         const confirmEmail = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:5175/api/v1/account/ConfirmEmail',
+                    'https://localhost:7131/api/account/ConfirmEmail',
                     {},
                     {
                         headers: {

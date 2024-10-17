@@ -36,13 +36,13 @@ const Register = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5175/api/v1/auth/register", {
+      const response = await axios.post("https://localhost:7131/api/auth/register", {
         username: name,
         email: email,
         password: password,
         confirmPassword: confirmPassword,
         role: "appuser",
-      });
+      }, {withCredentials: true});
 
       if (response.status === 200) {
         alert("Registration successful! Please check your email to confirm.");
