@@ -14,7 +14,7 @@ const Cart = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5175/api/product/GetProducts", {
+      const response = await fetch("https://localhost:7131/api/product/GetProducts", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
