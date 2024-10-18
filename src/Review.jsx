@@ -56,6 +56,7 @@ const Review = ({ productId, token }) => {
             </ul>
             <div>
                 <h3>Leave feedback</h3>
+                <h3>Оставить отзыв</h3>
                 <textarea
                     value={newReview.reviewText}
                     onChange={(e) => setNewReview({ ...newReview, reviewText: e.target.value })}

@@ -88,8 +88,8 @@ export const AuthProvider = ({ children }) => {
 
     Cookies.set('UserId', userId, { expires: 30 });
     Cookies.set('Username', username, { expires: 30 });
-    Cookies.set('AccessToken', accessToken, { expires: 1 / 144 }); // accessToken истекает через 10 минут
-    Cookies.set('RefreshToken', refreshToken, { expires: 30 }); // refreshToken истекает через 30 дней
+    Cookies.set('AccessToken', accessToken, { expires: 1 / 144 });
+    Cookies.set('RefreshToken', refreshToken, { expires: 30 });
     Cookies.set('RefreshTokenExpireTime', refreshTokenExpireTime, { expires: 30 });
   };
 

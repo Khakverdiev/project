@@ -5,14 +5,16 @@ import Footer from "./Footer";
 const Contacts = () => {
     return (
         <>
-        <div className="flex flex-col items-center p-6 sm:p-10">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center">Contact Us</h1>
-            <p className="text-base sm:text-lg text-center mb-8 max-w-2xl">
+        <br></br>
+        <br></br>
+        <div className="flex flex-col items-center p-6">
+            <h1 className="text-4xl font-bold mb-6">Contact Us</h1>
+            <p className="text-lg text-center mb-8 max-w-2xl">
                 If you have any questions, feel free to reach out to us! We're here to help you.
             </p>
 
             <div className="w-full max-w-md">
-                <form className="bg-white shadow-md rounded px-4 sm:px-8 pt-6 pb-8 mb-4">
+                <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
                             Name
@@ -57,12 +59,12 @@ const Contacts = () => {
                 </form>
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-center">Contact Information</h2>
-            <p className="text-base sm:text-lg text-center mb-2">Email: support@example.com</p>
-            <p className="text-base sm:text-lg text-center mb-2">Phone: +1 (234) 567-890</p>
-            <p className="text-base sm:text-lg text-center mb-2">Address: 123 Fashion St, Style City, 12345</p>
+            <h2 className="text-2xl font-semibold mb-4">Contact Information</h2>
+            <p className="text-lg text-center mb-2">Email: support@example.com</p>
+            <p className="text-lg text-center mb-2">Phone: +1 (234) 567-890</p>
+            <p className="text-lg text-center mb-2">Address: 123 Fashion St, Style City, 12345</p>
         </div>
-        <Footer />
+        <Footer></Footer>
         </>
     );
 };
