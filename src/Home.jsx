@@ -94,7 +94,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pt-16">
       <div className="flex-grow px-4 py-10">
         <h1 className="text-3xl md:text-5xl font-bold text-center mb-6">Home</h1>
         {loading ? (
@@ -132,7 +132,7 @@ const Home = () => {
                   onClick={() => handleBuy(product.id)}
                   className="mt-4 w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-300"
                 >
-                  Купить
+                  Buy
                 </button>
               </div>
             ))}

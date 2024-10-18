@@ -13,10 +13,6 @@ root.render(
     <AuthProvider>
         <CartProvider>
             <RouterProvider router={router} />
-<<<<<<< HEAD
-=======
-        <RouterProvider router={router} />
->>>>>>> 142cee9230816675b04e1a7d72b1eb735d56392a
         </CartProvider>
     </AuthProvider>
 );

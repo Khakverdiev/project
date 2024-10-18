@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
 import { useAuth } from "./AuthContext";
+import axios from "axios";
 
 const Cart = () => {
   const { cartItems, removeItemFromCart, clearCart } = useCart();

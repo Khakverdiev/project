@@ -50,7 +50,7 @@ const Profile = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pt-16"> {/* Adjusted padding here */}
       <div className="container mx-auto p-4 sm:p-6 flex-grow">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">User Profile</h1>
         <div className="bg-gray-100 shadow-lg rounded-lg p-4 sm:p-8 max-w-xl mx-auto">
